@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Repository
-public class FlightRepository {
+public class FlightInMemoryRepository{
 
     private final Set<Flight> flightList = new HashSet<>();
     private final AtomicInteger id = new AtomicInteger(0);
@@ -47,7 +47,7 @@ public class FlightRepository {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FlightRepository that = (FlightRepository) o;
+        FlightInMemoryRepository that = (FlightInMemoryRepository) o;
         return Objects.equals(flightList, that.flightList) && Objects.equals(id, that.id);
     }
 

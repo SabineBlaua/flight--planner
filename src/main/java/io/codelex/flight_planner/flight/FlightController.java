@@ -1,5 +1,6 @@
 package io.codelex.flight_planner.flight;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 public class FlightController {
     private final FlightService flightService;
 
+    @Autowired
     public FlightController(FlightService flightService) {
         this.flightService = flightService;
     }

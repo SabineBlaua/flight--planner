@@ -2,21 +2,31 @@ package io.codelex.flight_planner.flight;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.codelex.flight_planner.airport.Airport;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity
 public class Flight {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @ManyToOne
     private Airport from;
+
+    @ManyToOne
     private Airport to;
+
     private String carrier;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime departureTime;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime arrivalTime;
-
 
     public Flight(Integer id, Airport from, Airport to, String carrier, LocalDateTime departureTime, LocalDateTime arrivalTime) {
 
@@ -26,6 +36,10 @@ public class Flight {
         this.carrier = carrier;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
+
+    }
+
+    public Flight() {
 
     }
 
