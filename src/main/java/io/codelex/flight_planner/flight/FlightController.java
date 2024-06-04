@@ -1,5 +1,8 @@
 package io.codelex.flight_planner.flight;
 
+import io.codelex.flight_planner.flight.exceptions.BadRequestException;
+import io.codelex.flight_planner.flight.exceptions.FlightAlreadyExistsException;
+import io.codelex.flight_planner.flight.exceptions.FlightNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -9,10 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class FlightController {
     private final FlightService flightService;
+    private final FlightValidationService flightValidationService;
 
     @Autowired
-    public FlightController(FlightService flightService) {
+    public FlightController(FlightService flightService, FlightValidationService flightValidationService) {
         this.flightService = flightService;
+        this.flightValidationService = flightValidationService;
     }
 
     @PostMapping("/testing-api/clear")
@@ -24,7 +29,8 @@ public class FlightController {
     @ResponseStatus(HttpStatus.CREATED)
     public Flight addFlight(@RequestBody AddFlightRequest request) {
         try {
-            flightService.compareAirports(request);
+            flightValidationService.validateAirports(request);
+            flightValidationService.validateAddFlightRequest(request);
             return flightService.addFlight(request);
         } catch (IllegalArgumentException e) {
             throw new BadRequestException(e.getMessage());
@@ -45,7 +51,7 @@ public class FlightController {
     @PostMapping("/api/flights/search")
     @ResponseStatus(HttpStatus.OK)
     public PageResult<Flight> searchFlights(@RequestBody SearchFlightsRequest request) {
-        flightService.validateSearchRequest(request);
+        flightValidationService.validateSearchRequest(request);
         return flightService.searchFlights(request.getFrom(), request.getTo(), request.getDepartureDate());
     }
 

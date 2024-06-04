@@ -42,7 +42,4 @@ public class AddFlightRequest {
         return arrivalTime;
     }
 
-    public Flight requestToFlight(Integer newId) {
-        return new Flight(newId, from, to, carrier, departureTime, arrivalTime);
-    }
 }

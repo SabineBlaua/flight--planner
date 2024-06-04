@@ -1,5 +1,6 @@
-package io.codelex.flight_planner.flight;
+package io.codelex.flight_planner.flight.inMemory;
 
+import io.codelex.flight_planner.flight.Flight;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashSet;
