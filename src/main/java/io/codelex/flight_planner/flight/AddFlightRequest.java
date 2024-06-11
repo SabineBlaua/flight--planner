@@ -1,5 +1,6 @@
 package io.codelex.flight_planner.flight;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.codelex.flight_planner.airport.Airport;
 
 import java.time.LocalDateTime;
@@ -7,10 +8,15 @@ import java.time.format.DateTimeFormatter;
 
 public class AddFlightRequest {
 
+
     private final Airport from;
     private final Airport to;
     private final String carrier;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private final LocalDateTime departureTime;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private final LocalDateTime arrivalTime;
 
     public AddFlightRequest(Airport from, Airport to, String carrier, String departureTime, String arrivalTime) {
@@ -42,7 +48,4 @@ public class AddFlightRequest {
         return arrivalTime;
     }
 
-    public Flight requestToFlight(Integer newId) {
-        return new Flight(newId, from, to, carrier, departureTime, arrivalTime);
-    }
 }

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 @Repository
 public class AirportRepository {
 
-    private final Set<Airport> airportList = new HashSet<>();
+    Set<Airport> airportList = new HashSet<>();
 
     public Set<Airport> getAirportList() {
         return airportList;

@@ -1,5 +1,9 @@
 package io.codelex.flight_planner.flight;
 
+import io.codelex.flight_planner.flight.exceptions.BadRequestException;
+import io.codelex.flight_planner.flight.exceptions.FlightAlreadyExistsException;
+import io.codelex.flight_planner.flight.exceptions.FlightNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -8,9 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class FlightController {
     private final FlightService flightService;
+    private final FlightValidationService flightValidationService;
 
-    public FlightController(FlightService flightService) {
+    @Autowired
+    public FlightController(FlightService flightService, FlightValidationService flightValidationService) {
         this.flightService = flightService;
+        this.flightValidationService = flightValidationService;
     }
 
     @PostMapping("/testing-api/clear")
@@ -21,12 +28,9 @@ public class FlightController {
     @PutMapping("/admin-api/flights")
     @ResponseStatus(HttpStatus.CREATED)
     public Flight addFlight(@RequestBody AddFlightRequest request) {
-        try {
-            flightService.compareAirports(request);
-            return flightService.addFlight(request);
-        } catch (IllegalArgumentException e) {
-            throw new BadRequestException(e.getMessage());
-        }
+        flightValidationService.validateAirports(request);
+        flightValidationService.validateAddFlightRequest(request);
+        return flightService.addFlight(request);
     }
 
     @GetMapping("/admin-api/flights/{id}")
@@ -43,7 +47,7 @@ public class FlightController {
     @PostMapping("/api/flights/search")
     @ResponseStatus(HttpStatus.OK)
     public PageResult<Flight> searchFlights(@RequestBody SearchFlightsRequest request) {
-        flightService.validateSearchRequest(request);
+        flightValidationService.validateSearchRequest(request);
         return flightService.searchFlights(request.getFrom(), request.getTo(), request.getDepartureDate());
     }
 
@@ -72,4 +76,9 @@ public class FlightController {
         return e.getMessage();
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleBadRequestException(BadRequestException e) {
+        return e.getMessage();
+    }
 }

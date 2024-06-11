@@ -1,5 +1,6 @@
-package io.codelex.flight_planner.flight;
+package io.codelex.flight_planner.flight.exceptions;
 
+import io.codelex.flight_planner.flight.exceptions.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
