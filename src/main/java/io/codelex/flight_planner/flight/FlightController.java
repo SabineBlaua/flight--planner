@@ -28,13 +28,9 @@ public class FlightController {
     @PutMapping("/admin-api/flights")
     @ResponseStatus(HttpStatus.CREATED)
     public Flight addFlight(@RequestBody AddFlightRequest request) {
-        try {
-            flightValidationService.validateAirports(request);
-            flightValidationService.validateAddFlightRequest(request);
-            return flightService.addFlight(request);
-        } catch (IllegalArgumentException e) {
-            throw new BadRequestException(e.getMessage());
-        }
+        flightValidationService.validateAirports(request);
+        flightValidationService.validateAddFlightRequest(request);
+        return flightService.addFlight(request);
     }
 
     @GetMapping("/admin-api/flights/{id}")
@@ -80,4 +76,9 @@ public class FlightController {
         return e.getMessage();
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleBadRequestException(BadRequestException e) {
+        return e.getMessage();
+    }
 }

@@ -17,7 +17,6 @@ import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-
 public class FlightDbService implements FlightService {
     private final FlightDbRepository flightDbRepository;
     private final AirportDbRepository airportDbRepository;
@@ -42,14 +41,24 @@ public class FlightDbService implements FlightService {
                     request.getArrivalTime()
             );
 
-            if (flightExists(flight)) {
-                throw new FlightAlreadyExistsException("Flight already exists");
-            }
-
             airportDbRepository.save(flight.getFrom());
             airportDbRepository.save(flight.getTo());
 
+            List<Flight> existingFlights = flightDbRepository.findByFromAndToAndCarrierAndDepartureTimeAndArrivalTime(
+                    flight.getFrom(),
+                    flight.getTo(),
+                    flight.getCarrier(),
+                    flight.getDepartureTime(),
+                    flight.getArrivalTime()
+            );
+
+
+            if (!existingFlights.isEmpty()) {
+                throw new FlightAlreadyExistsException("Flight already exists");
+            }
+
             return flightDbRepository.save(flight);
+
         } finally {
             lock.unlock();
         }
@@ -81,12 +90,6 @@ public class FlightDbService implements FlightService {
         List<Flight> matchingFlights = flightDbRepository.findByFromInAndToInAndDepartureTimeBetween(
                 fromAirports, toAirports, startOfDay, endOfDay);
 
-
         return new PageResult<>(0, matchingFlights.size(), matchingFlights);
-    }
-
-    private boolean flightExists(Flight flight) {
-        return flightDbRepository.existsByFromAndToAndCarrierAndDepartureTimeAndArrivalTime(
-                flight.getFrom(), flight.getTo(), flight.getCarrier(), flight.getDepartureTime(), flight.getArrivalTime());
     }
 }

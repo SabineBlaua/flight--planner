@@ -6,7 +6,6 @@ import io.codelex.flight_planner.flight.Flight;
 import io.codelex.flight_planner.flight.FlightService;
 import io.codelex.flight_planner.flight.PageResult;
 import io.codelex.flight_planner.flight.exceptions.FlightAlreadyExistsException;
-import io.codelex.flight_planner.flight.inMemory.FlightInMemoryRepository;
 
 import java.time.LocalDate;
 import java.util.List;
